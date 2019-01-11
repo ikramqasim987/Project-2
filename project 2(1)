@@ -1,0 +1,84 @@
+
+# MCS 260 project Ikram Qasim
+
+import random 
+
+def new_function(H,C,D,):
+    #I am creating lists
+    arrival_times= [0]*C 
+    processing_times=[0]*C
+    start_times= [0]*C
+    end_times= [0]*C
+    wait_times= [0]*C
+
+
+    #Creating random arrival and serving times
+    for cust_no in range(0,C):
+        a_time= random.uniform(0,H*60)
+        p_time= random.uniform(5,15)
+        arrival_times[cust_no]= a_time
+        processing_times[cust_no]=p_time
+    arrival_times.sort()
+
+    #Filling out the start end times and wait times
+    start_times[0]= arrival_times[0]
+    end_times[0]= start_times[0]+processing_times[0]
+    wait_times[0]= start_times[0]- arrival_times[0]
+    customers_processed=0
+    customers_processed=1
+
+    # Here we are trying to figure out the time the customer arrived, was attended to, and when they finished
+    for cust_no in range(1,C):
+        start_times[cust_no]= arrival_times[cust_no]
+        #Making sure that customers are waiting till the previous customer finishes
+        if start_times[cust_no]<end_times[cust_no-1]:
+            start_times[cust_no]= end_times[cust_no-1]
+        end_times[cust_no]= start_times[cust_no]+processing_times[cust_no]
+        wait_times[cust_no]= start_times[cust_no]-arrival_times[cust_no]
+        customers_processed+=1
+        # Making sure that if the customers comes past closing time then they are not attended to.
+        if start_times[cust_no]>H*60:
+            break
+
+
+        
+    #Figuring out the average
+    average_wait_time= sum(wait_times)/customers_processed
+
+        
+    #Debug statements
+    #print('arrival times is    ',arrival_times)
+    #print('processing times is ',processing_times)
+    #print('start time is       ',start_times)
+    #print('end time is         ',end_times)
+    #print('wait time is        ',wait_times)
+    #print('customers processed ',customers_processed)
+    #print('average wait is     ',average_wait_time)
+    return(average_wait_time)
+
+    
+#Finding the average wait time of all the days
+def avg_max_calc( H, C, D):
+    wait_all_days= [0]*D
+    for dayx in range(0,D):
+        wait_all_days[dayx]= new_function(H,C,D)
+        
+    avg_max_calcs =sum(wait_all_days)/D
+    
+    #print('wait all days is    ', wait_all_days)
+    return avg_max_calcs
+
+    
+   
+
+
+#Setting up the inputs
+print('Welcome to my average maximum customer wait time calculator')
+H=input('Give number of hours in a day:  ')
+Minutes= H*60
+C=input('Give number of customers in a day:    ')
+D=input('Give number of days to simulate:    ')
+
+#Last step, displaying the average wait time
+print'The average maximum customer wait time is', avg_max_calc(H,C,D)
+
